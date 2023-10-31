@@ -1,15 +1,60 @@
-Source: template-repository
-Section: unknown
+Source: meson-python
+Section: python
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Maintainer: Debian Python Team <team+python@tracker.debian.org>
+Uploaders:
+ Simon McVittie <smcv@debian.org>,
+Build-Depends:
+ cython3 <!nocheck>,
+ debhelper-compat (= 13),
+ dh-python,
+ dh-sequence-python3,
+ dh-sequence-sphinxdoc,
+ libpython3-all-dev <!nocheck>,
+ meson (>= 0.63.3),
+ ninja-build,
+ patchelf <!nocheck>,
+ pkg-config,
+ pybuild-plugin-pyproject,
+ python3-all (>= 3.11),
+ python3-git <!nocheck>,
+ python3-pyproject-metadata (>= 0.7.1),
+ python3-pytest <!nocheck>,
+ python3-pytest-mock <!nocheck>,
+ python3-setuptools,
+ python3-sphinx-autobuild,
+ python3-sphinx-autodoc-typehints,
+ python3-sphinx-copybutton,
+ python3-sphinx-design,
+ python3-sphinxcontrib.spelling,
+ python3-sphinxext-opengraph,
+ python3-venv <!nocheck>,
+ python3-wheel <!nocheck>,
+Rules-Requires-Root: no
+Standards-Version: 4.6.2
+Homepage: https://github.com/FFY00/meson-python
+Vcs-Git: https://salsa.debian.org/python-team/packages/meson-python.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/meson-python
+Testsuite: autopkgtest-pkg-python
 
-Package: template-repository
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Package: python3-mesonpy
+Architecture: all
+Depends:
+ libjs-sphinxdoc,
+ meson (>= 0.63.3),
+ ninja-build,
+ python3 (>= 3.11),
+ python3-pyproject-metadata (>= 0.7.1),
+ python3-setuptools,
+ ${misc:Depends},
+ ${python3:Depends},
+ ${sphinxdoc:Depends},
+Recommends:
+ patchelf,
+Description: Meson PEP 517 Python build backend
+ This package enables Python package authors to use Meson as the build
+ backend for their packages.
+ .
+ Meson is a build system designed to increase programmer productivity.
+ It does this by providing a fast, simple and easy to use interface for
+ modern software development tools and practices.

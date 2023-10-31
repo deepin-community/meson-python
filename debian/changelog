@@ -1,5 +1,39 @@
-template-repository (1.0-1) unstable; urgency=medium
+meson-python (0.13.2-1) unstable; urgency=medium
 
-  * Initial release
+  * New upstream release
+  * d/copyright: Update for new upstream release
+  * d/control: Update (build-)dependencies for new upstream release
+  * d/rules: Don't copy an upstream signature from debian/upstream/ into
+    the parent directory during build.
+    There's no obvious source for an upstream signature for 0.13.2, and if
+    one is available, we should teach debian/watch to download it instead.
+  * d/patches: Refresh patch series
+  * d/p/ignore-failing-tests-for-the-moment.patch:
+    Stop marking test_scipy_like as expected to fail: it now passes
+  * d/p/docs-Disable-sphinx_contributors-plugin.patch:
+    Add patch to disable an unpackaged sphinx plugin
+  * d/p/tests-Skip-test_consistency-during-Debian-build.patch:
+    Skip a test that makes assumptions about the source/build tree layout.
+    This is a consistency check for the upstream maintainers rather than
+    a functional test that is necessary in Debian.
+  * d/p/Exclude-ninja-from-dependencies.patch:
+    Remove patch, no longer applied or needed since 0.12.0
+  * d/python3-mesonpy.docs: Adjust for reformatting of README.rst
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Simon McVittie <smcv@debian.org>  Sun, 23 Jul 2023 16:27:01 +0100
+
+meson-python (0.12.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * Source-only upload
+  * Standards-Version: 4.6.2 (routine-update)
+
+ -- Andreas Tille <tille@debian.org>  Wed, 18 Jan 2023 08:20:50 +0100
+
+meson-python (0.12.0-1) unstable; urgency=medium
+
+  [ Simon McVittie ]
+  * Team upload.
+  * New package (Closes: #1017959)
+
+ -- Andreas Tille <tille@debian.org>  Wed, 04 Jan 2023 10:50:04 +0100

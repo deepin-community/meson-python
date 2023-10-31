@@ -1,0 +1,23 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Fri, 21 Jul 2023 11:48:20 +0100
+Subject: docs: Disable sphinx_contributors plugin
+
+This isn't currently packaged in Debian.
+
+Forwarded: not-needed, Debian-specific
+---
+ docs/conf.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/docs/conf.py b/docs/conf.py
+index e274758..1a6fbe0 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -38,7 +38,6 @@ extensions = [
+     'sphinx.ext.intersphinx',
+     'sphinx.ext.todo',
+     'sphinx_autodoc_typehints',
+-    'sphinx_contributors',
+     'sphinx_copybutton',
+     'sphinx_design',
+     'sphinxcontrib.spelling',
