@@ -1,0 +1,24 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Fri, 26 Aug 2022 13:40:46 +0100
+Subject: docs: Use default Sphinx theme
+
+The furo theme is not currently packaged in Debian.
+
+Forwarded: not-needed, Debian-specific
+---
+ docs/conf.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/docs/conf.py b/docs/conf.py
+index f75e2ff..e274758 100644
+--- a/docs/conf.py
++++ b/docs/conf.py
+@@ -67,7 +67,7 @@ todo_include_todos = True
+ # The theme to use for HTML and HTML Help pages.  See the documentation for
+ # a list of builtin themes.
+ #
+-html_theme = 'furo'
++html_theme = 'default'
+ html_title = f'meson-python {version}'
+ 
+ html_static_path = ['static']

@@ -1,0 +1,15 @@
+Document: meson-python
+Title: meson-python reference manual
+Author: Filipe Laíns
+Abstract: mesonpy Python module reference manual
+ This package enables Python package authors to use Meson as the build
+ backend for their packages.
+ .
+ Meson is a build system designed to increase programmer productivity.
+ It does this by providing a fast, simple and easy to use interface for
+ modern software development tools and practices.
+Section: Programming/Python
+
+Format: HTML
+Index: /usr/share/doc/python3-mesonpy/html/index.html
+Files: /usr/share/doc/python3-mesonpy/html/*.html
