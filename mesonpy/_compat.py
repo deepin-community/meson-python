@@ -9,7 +9,6 @@ from __future__ import annotations
 import functools
 import importlib.resources
 import os
-import pathlib
 import sys
 import typing
 
@@ -41,21 +40,16 @@ if typing.TYPE_CHECKING:
     else:
         from typing_extensions import ParamSpec
 
+    if sys.version_info >= (3, 11):
+        from typing import Self
+    else:
+        from typing_extensions import Self
+
     Path = Union[str, os.PathLike]
-
-
-# backport og pathlib.Path.is_relative_to
-def is_relative_to(path: pathlib.Path, other: Union[pathlib.Path, str]) -> bool:
-    try:
-        path.relative_to(other)
-    except ValueError:
-        return False
-    return True
 
 
 __all__ = [
     'cached_property',
-    'is_relative_to',
     'read_binary',
     'Collection',
     'Iterable',
@@ -63,5 +57,6 @@ __all__ = [
     'Mapping',
     'Path',
     'ParamSpec',
+    'Self',
     'Sequence',
 ]

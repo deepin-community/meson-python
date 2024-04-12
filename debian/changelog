@@ -1,3 +1,29 @@
+meson-python (0.15.0-1) unstable; urgency=medium
+
+  * New upstream release
+    - Confirmed to build successfully with python3.12 (Closes: #1055576)
+  * Update build-dependencies
+    - Depend on meson (>= 1.2.3) for Python 3.12 compatibility
+    - Depend on python3-all-venv.
+      Thanks to Graham Inggs / Ubuntu.
+    - Drop setuptools, no longer needed
+    - Reduce Sphinx build-dependencies.
+      Several of these are no longer needed.
+  * Update patch series
+    - d/p/docs-Remove-external-image-references.patch:
+      No longer needed since 491749c2 upstream
+    - d/p/docs-Disable-sphinx_contributors-plugin.patch:
+      No longer needed since 6540f7c7 upstream
+    - d/p/tests-Skip-test_consistency-during-Debian-build.patch:
+      No longer needed
+    - d/p/ignore-failing-tests-for-the-moment.patch:
+      One of the failing tests was dropped in a0f0827d upstream,
+      another is no longer failing.
+  * d/rules: Stop working around zeroed mtime in the source tarball.
+    Newer upstream releases no longer have that.
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 05 Dec 2023 17:02:26 +0000
+
 meson-python (0.13.2-1) unstable; urgency=medium
 
   * New upstream release

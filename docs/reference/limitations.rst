@@ -9,68 +9,38 @@ Limitations
 ***********
 
 
-No data
-=======
-
-Data, as installed by |install_data|_, is not supported.
-
-We recommend you install your data inside a Python module and use
-:py:mod:`importlib.resources` (or the :py:mod:`importlib_resources` backport) to
-access it. You can check our :ref:`tutorials-data` tutorial for how to do this.
-
-If you really need the data to be installed where it was previously (eg.
-``/usr/data``), you can do so at runtime.
-
-
-Parallel use of editable installs
-=================================
-
-Currently, using a package installed in editable mode in more than one
-interpreter instances at the same time is not supported.
-
-
-Using editable installs with IDEs
-=================================
-
-Currently, with editable installs, setting breakpoints via an IDE or similar
-tool will not work.
-
-We have work planned to fix this issue.
-
-
-License field on PyPI_
+Non-package data files
 ======================
 
-``meson-python`` includes the license file in the metadata, instead of trying to
-match it to a classifier_ and omitting it, like some other backends do.
-Unfortunately, this results in the whole license text being shown on the
-*License* of PyPI_. You can read more about the issue and potential planned
-fixes in `#129`_.
+It is possible to encapsulate arbitrary data files into Python
+wheels. ``meson-python`` will add to the wheel any data file installed
+into the Meson's ``{datadir}`` location, for example via Meson's
+|install_data()|_ function. However, when the resulting wheel is
+installed, these files are unpacked into a platform-specific location
+and there is no supported facility to reliably find them at run time.
+
+It is recommended to include data files than need to be accessible at
+run-time inside the package alongside the Python code, and use
+:mod:`importlib.resources` (or the `importlib-resources`_ backport) to
+access them.
 
 
-Platform-specific limitations
-=============================
+Shared libraries on Windows
+===========================
+
+On Windows, ``meson-python`` cannot encapsulate shared libraries
+installed as part of the Meson project into the Python wheel for
+Python extension modules or executables, in a way suitable for them to
+be found at run-time.
+
+This limitation can be overcome with static linking or using
+`delvewheel`_ to post-process the Python wheel to bundle the required
+shared libraries and include the setup code to properly set the
+library search path.
 
 
-Executables with internal dependencies :bdg-warning:`Windows`
--------------------------------------------------------------
+.. _install_data(): https://mesonbuild.com/Reference-manual_functions.html#install_data
+.. _importlib-resources: https://importlib-resources.readthedocs.io/en/latest/index.html
+.. _delvewheel: https://github.com/adang1345/delvewheel
 
-
-If you have an executable that links against a shared library provided by your
-project, on Windows ``meson-python`` will not be able to correctly bundle it
-into the *wheel*.
-
-The executable will be included in the *wheel*, but it
-will not be able to find the project libraries it links against.
-
-This is, however, easily solved by using a static library for the executable in
-question. Find how to do this in our
-:ref:`how-to-guides-executable-with-internal-dependencies` guide.
-
-
-.. _install_data: https://mesonbuild.com/Reference-manual_functions.html#install_data
-.. _PyPI: https://pypi.org/
-.. _classifier: https://pypi.org/classifiers/
-.. _#129: https://github.com/mesonbuild/meson-python/issues/129
-
-.. |install_data| replace:: ``install_data``
+.. |install_data()| replace:: ``install_data()``

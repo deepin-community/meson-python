@@ -19,6 +19,8 @@ def docs(session):
     """
 
     session.install('.[docs]')
+    session.install('sphinx-autobuild')
+    session.install('sphinxcontrib-spelling >= 7.0.0')
     session.chdir('docs')
 
     spelling_args = ('-b', 'spelling')

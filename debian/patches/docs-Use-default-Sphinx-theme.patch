@@ -10,10 +10,10 @@ Forwarded: not-needed, Debian-specific
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/docs/conf.py b/docs/conf.py
-index f75e2ff..e274758 100644
+index afe7d02..ccdc050 100644
 --- a/docs/conf.py
 +++ b/docs/conf.py
-@@ -67,7 +67,7 @@ todo_include_todos = True
+@@ -72,7 +72,7 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
  # The theme to use for HTML and HTML Help pages.  See the documentation for
  # a list of builtin themes.
  #

@@ -19,56 +19,50 @@ other maintainer.
 
 After that is done, you may release the project by following these steps:
 
-#. Release to the Git_ repository
-    #. Create the release commit
-        #. Bump the versions in ``meson.build`` and ``mesonpy/__init__.py``
-        #. Create ``CHANGELOG.rst`` section for the new release and fill it
+#. Release to the Git repository on GitHub:
 
-        .. admonition:: Release commit format
-           :class: important
+   #. Create the release commit
 
-           The commit message should follow the ``release X.Y.Z`` format.
-    #. Create a signed tag for the release
-        .. code-block:: console
+      #. Bump the versions in ``meson.build`` and ``mesonpy/__init__.py``.
+      #. Create ``CHANGELOG.rst`` section for the new release and fill it.
+      #. The commit message should read: ``REL: set version to X.Y.Z``
 
-           $ git tag -s X.Y.Z
+   #. Create a GPG-signed tag for the release:
 
-        .. admonition:: Release commit format
-           :class: important
+      .. code-block:: console
 
-           The tag title should follow the ``meson-python X.Y.Z`` format, and the
-           tag body should be a plain text version of the change-log for the current
-           release.
+         $ git tag -s X.Y.Z
 
-        .. admonition:: Converting the change-log text to plain text
-             :class: hint
+      The tag title should follow the ``meson-python X.Y.Z`` format, and the
+      tag body should be a plain text version of the change-log for the current
+      release.
 
-             To easily get a plain text version of the change-log, you can push the
-             release commit and then copy the text from rendered version of the
-             change-log in Github.
+   #. Push the commit and tag to the repository:
 
-    #. Push the commit and tag to the repository
-        .. code-block:: console
+      .. code-block:: console
 
-           $ git push
-           $ git push --tags
+         $ git push
+         $ git push --tags
 
-#. Release to PyPI_
-    #. Build the Python artifacts
-        .. code-block:: console
+#. Release to `PyPI <https://pypi.org/project/meson-python/>`_
 
-           $ python -m build
+   #. Build the Python artifacts:
 
-    #. Sign and push the artifacts to PyPI
-        .. code-block:: console
+      .. code-block:: console
 
-           $ twine upload -s dist/*
+         $ python -m build
 
+   #. Push the artifacts to PyPI:
+
+      .. code-block:: console
+
+         $ twine upload dist/*
+
+      There is no need to GPG-sign the artifacts: PyPI no longer
+      supports uploading GPG signatures.
 
 If you have any questions, please look at previous releases and/or ping the
 other maintainers.
 
 
 .. _installation page: installation
-.. _Git: https://git-scm.com/
-.. _PyPI: https://pypi.org/

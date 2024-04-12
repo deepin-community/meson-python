@@ -26,7 +26,7 @@ for the ``setup``, ``compile``, ``install``, and ``dist`` keys in the
 .. code-block:: toml
 
    [tool.meson-python.args]
-   setup = ['-Doption=false', '-Dfeature=enable', '-Dvalue=42']
+   setup = ['-Doption=false', '-Dfeature=enabled', '-Dvalue=42']
    compile = ['-j4']
    install = ['--tags=bindings']
    dist = ['--include-subprojects']
@@ -90,7 +90,7 @@ To set this option temporarily at build-time:
 
         .. code-block:: console
 
-           $ python -m pip wheel . --config-settings=setup-args="--default-library=static" .
+           $ python -m pip wheel --config-settings=setup-args="--default-library=static" .
 
 
 Select the build targets to include in the wheel
@@ -125,14 +125,14 @@ To set this option temporarily at build-time:
 
         .. code-block:: console
 
-	   $ python -m build -install-args="--tags=runtime,python-runtime" .
+	   $ python -m build -Cinstall-args="--tags=runtime,python-runtime" .
 
     .. tab-item:: pip
         :sync: key_pip
 
         .. code-block:: console
 
-	   $ python -m pip wheel . --config-settings=install-args="--tags=runtime,python-runtime" .
+	   $ python -m pip wheel --config-settings=install-args="--tags=runtime,python-runtime" .
 
 
 Set the build optimization level
@@ -165,7 +165,7 @@ To set this option temporarily at build-time:
 
         .. code-block:: console
 
-	   $ python -m pip wheel . --config-settings=setup-args="-Doptimization=3" .
+	   $ python -m pip wheel --config-settings=setup-args="-Doptimization=3" .
 
 
 .. _vsenv-example:
@@ -206,4 +206,4 @@ To set this option temporarily at build-time:
 
         .. code-block:: console
 
-	   $ python -m pip wheel . --config-settings=setup-args="--vsenv" .
+	   $ python -m pip wheel --config-settings=setup-args="--vsenv" .

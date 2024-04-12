@@ -7,9 +7,68 @@
    git log --format='%aN' $PREV..HEAD | sort -u | awk '$1=$1' RS='' FS='\n' OFS=', '
 
 
-++++++++++
-Change-log
-++++++++++
++++++++++
+Changelog
++++++++++
+
+0.15.0
+======
+
+- Enable compression for wheel files. The may result in several times
+  smaller wheels.
+- Require Meson 1.2.3 or later on Python 3.12 or later. Meson 1.2.3
+  does not require anymore ``distutils``, allowing to remove the
+  dependency on ``setuptools`` on Python 3.12 or later.
+- Unconditionally require ``patchelf`` on Linux.  The ``patchelf``
+  package is added to the build dependencies if a suitable
+  ``patchelf`` executable is not find on the ``$PATH``. This avoids
+  cases where ``meson setup`` was run twice during the build process
+  to determine whether ``patchelf`` is required.
+- Allow to configure the ``meson`` executable to use for the build
+  process through the ``$MESON`` environment variable or the ``meson``
+  key under ``[tool.meson-python]`` in ``pyproject.toml``.
+- Fix wheel platform tag generation on FreeBSD.
+- Extend support to other UNIX-like systems and make the tests pass on
+  FreeBSD.
+- Fix package name normalization in package metadata and improve
+  package name validation.
+- Fix ``RPATH`` handling when the build ``RPATH`` points to
+  subdirectories of the build directory.
+- Fix support for the Python limited C API when compiling for PyPy.
+- Rename the ``builddir`` config-setting to ``build-dir``. For
+  backwards compatibility, the ``buildir`` config-setting remains
+  supported as an alias.
+
+Christoph Reiter, Daniele Nicolodi, Elliott Sales de Andrade, Ralf Gommers,
+Yue Yang --- 26-10-2023
+
+
+0.14.0
+======
+
+- Do not run ``meson install`` to build a wheel. This was unnecessary
+  as files are added to the wheel from the build and source
+  directories. This does not affect the handling of ``meson install``
+  options, which are interpreted by ``meson-python`` itself.
+- Obey the ``--skip-subprojects`` when specified for the ``meson
+  install`` command.
+- Implement support for the ``exclude_directories`` and
+  ``exclude_files`` arguments to Meson ``install_subdir()`` function
+  and similar installation functions. This requires Meson version
+  1.1.0 or later.
+- Implement support for building wheels targeting the Python limited
+  API. Extension modules targeting the Python limited API can be
+  easily built starting with the upcoming Meson 1.3.0 release.
+- When ``pyproject.toml`` does not contain a ``version`` field and
+  ``version`` is not declared dynamic, raise an error instead of
+  silently using the version declared in ``meson.build``.
+- Fix the mtime of source files in the sdist tarball.
+- Add ``objc`` and ``objcpp`` compilers to the cross file generated
+  when the ``$ARCHFLAGS`` is set.
+- Extensive documentation improvements.
+
+Charles Brunet, Daniele Nicolodi, Henry Schreiner, Michał Górny, Ralf
+Gommers --- 05-09-2023
 
 
 0.13.2

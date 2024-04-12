@@ -18,9 +18,9 @@ from typing import IO
 
 
 if typing.TYPE_CHECKING:  # pragma: no cover
-    from typing import Optional, Tuple
+    from typing import Any
 
-    from mesonpy._compat import Iterable, Iterator, Path
+    from mesonpy._compat import Iterator, Path, Self
 
 
 @contextlib.contextmanager
@@ -35,31 +35,13 @@ def chdir(path: Path) -> Iterator[Path]:
 
 
 @contextlib.contextmanager
-def add_ld_path(paths: Iterable[str]) -> Iterator[None]:
-    """Context manager helper to add a path to LD_LIBRARY_PATH."""
-    old_value = os.environ.get('LD_LIBRARY_PATH')
-    old_paths = old_value.split(os.pathsep) if old_value else []
-    os.environ['LD_LIBRARY_PATH'] = os.pathsep.join([*paths, *old_paths])
-    try:
-        yield
-    finally:
-        if old_value is not None:  # pragma: no cover
-            os.environ['LD_LIBRARY_PATH'] = old_value
-
-
-@contextlib.contextmanager
-def create_targz(path: Path) -> Iterator[Tuple[tarfile.TarFile, Optional[int]]]:
+def create_targz(path: Path) -> Iterator[tarfile.TarFile]:
     """Opens a .tar.gz file in the file system for edition.."""
-
-    # reproducibility
-    source_date_epoch = os.environ.get('SOURCE_DATE_EPOCH')
-    mtime = int(source_date_epoch) if source_date_epoch else None
 
     os.makedirs(os.path.dirname(path), exist_ok=True)
     file = typing.cast(IO[bytes], gzip.GzipFile(
         path,
         mode='wb',
-        mtime=mtime,
     ))
     tar = tarfile.TarFile(
         mode='w',
@@ -68,13 +50,16 @@ def create_targz(path: Path) -> Iterator[Tuple[tarfile.TarFile, Optional[int]]]:
     )
 
     with contextlib.closing(file), tar:
-        yield tar, mtime
+        yield tar
 
 
-class CLICounter:
+class clicounter:
     def __init__(self, total: int) -> None:
-        self._total = total - 1
-        self._count = itertools.count()
+        self._total = total
+        self._count = itertools.count(start=1)
+
+    def __enter__(self) -> Self:
+        return self
 
     def update(self, description: str) -> None:
         line = f'[{next(self._count)}/{self._total}] {description}'
@@ -83,13 +68,6 @@ class CLICounter:
         else:
             print(line)
 
-    def finish(self) -> None:
+    def __exit__(self, exc_type: Any, exc_value: Any, exc_tb: Any) -> None:
         if sys.stdout.isatty():
             print()
-
-
-@contextlib.contextmanager
-def cli_counter(total: int) -> Iterator[CLICounter]:
-    counter = CLICounter(total)
-    yield counter
-    counter.finish()

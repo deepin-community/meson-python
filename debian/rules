@@ -7,12 +7,6 @@ include /usr/share/dpkg/default.mk
 %:
 	dh $@ --with sphinxdoc --buildsystem=pybuild
 
-execute_before_dh_auto_configure:
-	# The tarball contains files with mtime normalized to 1970-01-01,
-	# which the Debian archive rejects on the assumption that they
-	# indicate a misbuilt package.
-	find . -not -newermt @0 -exec touch -d "@$(SOURCE_DATE_EPOCH)" {} +
-
 execute_after_dh_auto_build:
 	PYTHONPATH=. http_proxy='127.0.0.1:9' python3 -m sphinx -N -bhtml docs/ build/html
 

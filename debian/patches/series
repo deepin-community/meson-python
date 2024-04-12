@@ -1,5 +1,2 @@
 docs-Use-default-Sphinx-theme.patch
-docs-Remove-external-image-references.patch
 ignore-failing-tests-for-the-moment.patch
-docs-Disable-sphinx_contributors-plugin.patch
-tests-Skip-test_consistency-during-Debian-build.patch

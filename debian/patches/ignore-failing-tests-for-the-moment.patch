@@ -7,12 +7,10 @@ We can't call pip since online access is not permitted.
 However, for the moment the exclusions are tagged FIXME
 to attract further investigation.
 
-Last-Update: Fri, 21 Jul 2023 11:46:27 +0100
+Last-Update: Tue, 5 Dec 2023 11:51:00 +0000
 ---
  tests/test_examples.py | 1 +
- tests/test_pep518.py   | 1 +
- tests/test_wheel.py    | 2 +-
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ 1 file changed, 1 insertion(+)
 
 diff --git a/tests/test_examples.py b/tests/test_examples.py
 index 98b2788..8ecef69 100644
@@ -26,28 +24,3 @@ index 98b2788..8ecef69 100644
  def test_spam(venv, tmp_path):
      """Test that the wheel for the example builds, installs, and imports."""
      with chdir(examples_dir / 'spam'):
-diff --git a/tests/test_pep518.py b/tests/test_pep518.py
-index af0f5d7..6c1c4d1 100644
---- a/tests/test_pep518.py
-+++ b/tests/test_pep518.py
-@@ -22,6 +22,7 @@ from .conftest import in_git_repo_context, package_dir
- @pytest.mark.parametrize(
-     'build_arg', ['', '--wheel'], ids=['sdist_to_wheel', 'wheel_directly']
- )
-+@pytest.mark.xfail(reason="FIXME: Needs more investigation to pass in Debian")
- def test_pep518(package, build_arg, tmp_path):
-     dist = tmp_path / 'dist'
- 
-diff --git a/tests/test_wheel.py b/tests/test_wheel.py
-index effa5f9..a348396 100644
---- a/tests/test_wheel.py
-+++ b/tests/test_wheel.py
-@@ -142,7 +142,7 @@ def test_configure_data(wheel_configure_data):
-     }
- 
- 
--@pytest.mark.skipif(platform.system() not in ['Linux', 'Darwin'], reason='Unsupported on this platform for now')
-+@pytest.mark.skip(reason="FIXME: Needs more investigation to pass in Debian")
- def test_local_lib(venv, wheel_link_against_local_lib):
-     venv.pip('install', wheel_link_against_local_lib)
-     output = venv.python('-c', 'import example; print(example.example_sum(1, 2))')

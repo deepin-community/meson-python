@@ -4,7 +4,6 @@
 
 import ast
 import os
-import platform
 import shutil
 import sys
 import textwrap
@@ -15,48 +14,29 @@ if sys.version_info < (3, 11):
 else:
     import tomllib
 
+import pyproject_metadata
 import pytest
 
 import mesonpy
 
-from .conftest import chdir, in_git_repo_context, package_dir
-
-
-@pytest.mark.parametrize(
-    ('package'),
-    [
-        'library',
-        'library-pep621',
-    ]
-)
-def test_name(package):
-    with chdir(package_dir / package), mesonpy.Project.with_temp_working_dir() as project:
-        assert project.name == package.replace('-', '_')
-
-
-@pytest.mark.parametrize(
-    ('package'),
-    [
-        'library',
-        'library-pep621',
-    ]
-)
-def test_version(package):
-    with chdir(package_dir / package), mesonpy.Project.with_temp_working_dir() as project:
-        assert project.version == '1.0.0'
-
-
-def test_unsupported_dynamic(package_unsupported_dynamic):
-    with pytest.raises(mesonpy.MesonBuilderError, match='Unsupported dynamic fields: "dependencies"'):
-        with mesonpy.Project.with_temp_working_dir():
-            pass
+from .conftest import in_git_repo_context, package_dir
 
 
 def test_unsupported_python_version(package_unsupported_python_version):
-    with pytest.raises(mesonpy.MesonBuilderError, match=(
-        f'Unsupported Python version {platform.python_version()}, expected ==1.0.0'
-    )):
-        with mesonpy.Project.with_temp_working_dir():
+    with pytest.raises(mesonpy.MesonBuilderError, match='Package requires Python version ==1.0.0'):
+        with mesonpy._project():
+            pass
+
+
+def test_missing_meson_version(package_missing_meson_version):
+    with pytest.raises(pyproject_metadata.ConfigurationError, match='Section "project" missing in pyproject.toml'):
+        with mesonpy._project():
+            pass
+
+
+def test_missing_dynamic_version(package_missing_dynamic_version):
+    with pytest.raises(pyproject_metadata.ConfigurationError, match='Field "version" declared as dynamic but'):
+        with mesonpy._project():
             pass
 
 
@@ -105,8 +85,7 @@ def test_user_args(package_user_args, tmp_path, monkeypatch):
         ['meson', 'dist'],
         # wheel: calls to 'meson setup', 'meson compile', and 'meson install'
         ['meson', 'setup'],
-        ['meson', 'compile'] if platform.system() == 'Windows' else ['ninja'],
-        ['meson', 'install']
+        ['meson', 'compile'] if sys.platform == 'win32' else ['ninja'],
     ]
 
     # check that the user options are passed to the invoked commands
@@ -138,7 +117,7 @@ def test_install_tags(package_purelib_and_platlib, tmp_path_session):
             'install': ['--tags', 'purelib'],
         }
     )
-    assert project.is_pure
+    assert 'platlib' not in project._manifest
 
 
 def test_validate_pyproject_config_one():
@@ -205,7 +184,7 @@ def test_invalid_build_dir(package_pure, tmp_path, mocker):
     meson.reset_mock()
 
     # corrupting the build direcory setup is run again
-    tmp_path.joinpath('build/meson-private/coredata.dat').unlink()
+    tmp_path.joinpath('meson-private/coredata.dat').unlink()
     project = mesonpy.Project(package_pure, tmp_path)
     assert len(meson.call_args_list) == 1
     assert meson.call_args_list[0].args[1][1] == 'setup'
@@ -214,7 +193,7 @@ def test_invalid_build_dir(package_pure, tmp_path, mocker):
     meson.reset_mock()
 
     # removing the build directory things should still work
-    shutil.rmtree(tmp_path.joinpath('build'))
+    shutil.rmtree(tmp_path)
     project = mesonpy.Project(package_pure, tmp_path)
     assert len(meson.call_args_list) == 1
     assert meson.call_args_list[0].args[1][1] == 'setup'
@@ -222,7 +201,7 @@ def test_invalid_build_dir(package_pure, tmp_path, mocker):
     project.build()
 
 
-@pytest.mark.skipif(not os.getenv('CI') or platform.system() != 'Windows', reason='Requires MSVC')
+@pytest.mark.skipif(not os.getenv('CI') or sys.platform != 'win32', reason='Requires MSVC')
 def test_compiler(venv, package_detect_compiler, tmp_path):
     # Check that things are setup properly to use the MSVC compiler on
     # Windows. This effectively means running the compilation step
