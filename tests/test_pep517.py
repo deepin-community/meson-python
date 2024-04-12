@@ -8,19 +8,15 @@ import sys
 
 from typing import List
 
+import packaging.requirements
 import pytest
 
 import mesonpy
 
-from mesonpy._util import chdir
 
-from .conftest import package_dir
-
-
-@pytest.mark.parametrize('package', ['pure', 'library'])
 @pytest.mark.parametrize('system_patchelf', ['patchelf', None], ids=['patchelf', 'nopatchelf'])
 @pytest.mark.parametrize('ninja', [None, '1.8.1', '1.8.3'], ids=['noninja', 'oldninja', 'newninja'])
-def test_get_requires_for_build_wheel(monkeypatch, package, system_patchelf, ninja):
+def test_get_requires_for_build_wheel(monkeypatch, package_pure, system_patchelf, ninja):
     # the NINJA environment variable affects the ninja executable lookup and breaks the test
     monkeypatch.delenv('NINJA', raising=False)
 
@@ -46,19 +42,18 @@ def test_get_requires_for_build_wheel(monkeypatch, package, system_patchelf, nin
 
     expected = set()
 
-    ninja_available = ninja is not None and [int(x) for x in ninja.split('.')] >= [1, 8, 2]
+    if ninja is None or mesonpy._parse_version_string(ninja) < (1, 8, 2):
+        expected.add('ninja')
 
-    if not ninja_available:
-        expected |= {mesonpy._depstr.ninja}
+    if system_patchelf is None and sys.platform.startswith('linux'):
+        expected.add('patchelf')
 
-    if (
-        system_patchelf is None and sys.platform.startswith('linux')
-        and (not ninja_available or (ninja_available and package != 'pure'))
-    ):
-        expected |= {mesonpy._depstr.patchelf}
+    requirements = mesonpy.get_requires_for_build_wheel()
 
-    with chdir(package_dir / package):
-        assert set(mesonpy.get_requires_for_build_wheel()) == expected
+    # Check that the requirement strings are in the correct format.
+    names = {packaging.requirements.Requirement(x).name for x in requirements}
+
+    assert names == expected
 
 
 def test_invalid_config_settings(capsys, package_pure, tmp_path_session):

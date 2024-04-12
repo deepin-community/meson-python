@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021 The meson-python developers
+# SPDX-FileCopyrightText: 2023 The meson-python developers
 #
 # SPDX-License-Identifier: MIT
 
@@ -7,5 +7,5 @@ build-backend = 'mesonpy'
 requires = ['meson-python']
 
 [project]
-name = 'library-pep621'
-version = '1.0.0'
+name = 'missing-dynamic-version'
+dynamic = ['version']

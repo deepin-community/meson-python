@@ -2,9 +2,10 @@
 #
 # SPDX-License-Identifier: MIT
 
+import importlib.machinery
 import os
 import pathlib
-import platform
+import sys
 import sysconfig
 
 from collections import defaultdict
@@ -24,8 +25,17 @@ ABI = tag.abi
 INTERPRETER = tag.interpreter
 PLATFORM = adjust_packaging_platform_tag(tag.platform)
 
+
+def get_abi3_suffix():
+    for suffix in importlib.machinery.EXTENSION_SUFFIXES:
+        if '.abi3' in suffix:  # Unix
+            return suffix
+        elif suffix == '.pyd':  # Windows
+            return suffix
+
+
 SUFFIX = sysconfig.get_config_var('EXT_SUFFIX')
-ABI3SUFFIX = next((x for x in mesonpy._EXTENSION_SUFFIXES if '.abi3.' in x), None)
+ABI3SUFFIX = get_abi3_suffix()
 
 
 def test_wheel_tag():
@@ -33,7 +43,7 @@ def test_wheel_tag():
     assert str(mesonpy._tags.Tag(abi='abi3')) == f'{INTERPRETER}-abi3-{PLATFORM}'
 
 
-@pytest.mark.skipif(platform.system() != 'Darwin', reason='macOS specific test')
+@pytest.mark.skipif(sys.platform != 'darwin', reason='macOS specific test')
 def test_macos_platform_tag(monkeypatch):
     for minor in range(9, 16):
         monkeypatch.setenv('MACOSX_DEPLOYMENT_TARGET', f'10.{minor}')
@@ -44,7 +54,7 @@ def test_macos_platform_tag(monkeypatch):
             assert next(packaging.tags.mac_platforms((major, minor))) == mesonpy._tags.get_platform_tag()
 
 
-@pytest.mark.skipif(platform.system() != 'Darwin', reason='macOS specific test')
+@pytest.mark.skipif(sys.platform != 'darwin', reason='macOS specific test')
 def test_python_host_platform(monkeypatch):
     monkeypatch.setenv('_PYTHON_HOST_PLATFORM', 'macosx-12.0-arm64')
     assert mesonpy._tags.get_platform_tag().endswith('arm64')
@@ -52,43 +62,43 @@ def test_python_host_platform(monkeypatch):
     assert mesonpy._tags.get_platform_tag().endswith('x86_64')
 
 
-def wheel_builder_test_factory(monkeypatch, content):
-    files = defaultdict(list)
-    files.update({key: [(pathlib.Path(x), os.path.join('build', x)) for x in value] for key, value in content.items()})
-    monkeypatch.setattr(mesonpy._WheelBuilder, '_wheel_files', files)
-    return mesonpy._WheelBuilder(None, None, pathlib.Path(), pathlib.Path(), pathlib.Path())
+def wheel_builder_test_factory(content, pure=True, limited_api=False):
+    manifest = defaultdict(list)
+    manifest.update({key: [(pathlib.Path(x), os.path.join('build', x)) for x in value] for key, value in content.items()})
+    return mesonpy._WheelBuilder(None, manifest, limited_api)
 
 
-def test_tag_empty_wheel(monkeypatch):
-    builder = wheel_builder_test_factory(monkeypatch, {})
+def test_tag_empty_wheel():
+    builder = wheel_builder_test_factory({})
     assert str(builder.tag) == 'py3-none-any'
 
 
-def test_tag_purelib_wheel(monkeypatch):
-    builder = wheel_builder_test_factory(monkeypatch, {
+def test_tag_purelib_wheel():
+    builder = wheel_builder_test_factory({
         'purelib': ['pure.py'],
     })
     assert str(builder.tag) == 'py3-none-any'
 
 
-def test_tag_platlib_wheel(monkeypatch):
-    builder = wheel_builder_test_factory(monkeypatch, {
+def test_tag_platlib_wheel():
+    builder = wheel_builder_test_factory({
         'platlib': [f'extension{SUFFIX}'],
     })
     assert str(builder.tag) == f'{INTERPRETER}-{ABI}-{PLATFORM}'
 
 
-@pytest.mark.skipif(not ABI3SUFFIX, reason='Stable ABI not supported by Python interpreter')
-def test_tag_stable_abi(monkeypatch):
-    builder = wheel_builder_test_factory(monkeypatch, {
+def test_tag_stable_abi():
+    builder = wheel_builder_test_factory({
         'platlib': [f'extension{ABI3SUFFIX}'],
-    })
+    }, limited_api=True)
     assert str(builder.tag) == f'{INTERPRETER}-abi3-{PLATFORM}'
 
 
-@pytest.mark.skipif(not ABI3SUFFIX, reason='Stable ABI not supported by Python interpreter')
-def test_tag_mixed_abi(monkeypatch):
-    builder = wheel_builder_test_factory(monkeypatch, {
+@pytest.mark.xfail(sys.version_info < (3, 8) and sys.platform == 'win32', reason='Extension modules suffix without ABI tags')
+@pytest.mark.xfail('__pypy__' in sys.builtin_module_names, reason='PyPy does not use special modules suffix for stable ABI')
+def test_tag_mixed_abi():
+    builder = wheel_builder_test_factory({
         'platlib': [f'extension{ABI3SUFFIX}', f'another{SUFFIX}'],
-    })
-    assert str(builder.tag) == f'{INTERPRETER}-{ABI}-{PLATFORM}'
+    }, pure=False, limited_api=True)
+    with pytest.raises(mesonpy.BuildError, match='The package declares compatibility with Python limited API but '):
+        assert str(builder.tag) == f'{INTERPRETER}-abi3-{PLATFORM}'

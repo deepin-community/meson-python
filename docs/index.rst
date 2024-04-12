@@ -3,34 +3,14 @@
 .. SPDX-License-Identifier: MIT
 
 
-*************************
-meson-python |PyPI badge|
-*************************
-
-.. image:: https://results.pre-commit.ci/badge/github/mesonbuild/meson-python/main.svg
-   :target: https://results.pre-commit.ci/latest/github/mesonbuild/meson-python/main
-   :alt: pre-commit.ci status
-
-
-.. image:: https://github.com/mesonbuild/meson-python/actions/workflows/tests.yml/badge.svg
-   :target: https://github.com/mesonbuild/meson-python/actions/workflows/tests.yml
-   :alt: Github Action 'tests' workflow status
-
-
-.. image:: https://codecov.io/gh/mesonbuild/meson-python/branch/main/graph/badge.svg?token=xcb2u2YvVk
-   :target: https://codecov.io/gh/mesonbuild/meson-python
-   :alt: Codecov coverage status
-
-
-.. image:: https://readthedocs.org/projects/meson-python/badge/?version=stable
-   :target: https://meson-python.readthedocs.io/en/stable/?badge=stable
-   :alt: Documentation Status
-
+************
+meson-python
+************
 
 .. highlights::
 
-   ``meson-python`` is a Python build backend built on top of the Meson_
-   build-system. It enables you to use Meson_ for your Python packages.
+   ``meson-python`` is a Python build backend built on top of the Meson
+   build-system. It enables you to use Meson for your Python packages.
 
 
 Want to look at examples in real projects? Check out our curated list of
@@ -40,19 +20,12 @@ Want to look at examples in real projects? Check out our curated list of
 Where to start?
 ===============
 
-
-New to Python packaging
------------------------
-
 If you are new to Python packaging, we recommend you check our
 :ref:`tutorial-introduction` tutorial, which walks you through creating and
 releasing your first Python package.
 
 
-Experienced users
------------------
-
-If you are already familiarized with Python packaging, we recommend you check
+If you are already familiar with Python packaging, we recommend you check
 our :ref:`how-to-guides-first-project` guide, which shows you how to quickly
 setup a ``meson-python`` project.
 
@@ -75,34 +48,13 @@ free to open an issue on our bugtracker_.
    `discussion page`_ first.
 
 
-In addition, the `#meson-python`_ channel on the `PyPA Discord`_ may be useful
-for quick questions - one ``meson-python`` maintainer is active there.
-
-
-Contributors
-============
-
-..  contributors:: mesonbuild/meson-python
-   :avatars:
-   :exclude: pre-commit-ci[bot]
-
-
-.. toctree::
-   :caption: Information
-   :hidden:
-
-   changelog
-   projects-using-meson-python
-   security
-
-
 .. toctree::
    :caption: Tutorials
    :hidden:
 
    tutorials/introduction
-   tutorials/data
-   tutorials/entrypoints
+
+.. tutorials/entrypoints
    tutorials/executable
 
 
@@ -111,12 +63,13 @@ Contributors
    :hidden:
 
    how-to-guides/first-project
-   how-to-guides/add-dependencies
    how-to-guides/editable-installs
    how-to-guides/config-settings
    how-to-guides/meson-args
-   how-to-guides/build-directory
-   how-to-guides/executable-with-internal-dependencies
+   how-to-guides/debug-builds
+   projects-using-meson-python
+
+.. how-to-guides/build-directory
 
 
 .. toctree::
@@ -126,45 +79,34 @@ Contributors
    reference/config-settings
    reference/pyproject-settings
    reference/environment-variables
-   reference/quirks
+   explanations/default-options
    reference/limitations
+   reference/meson-compatibility
+
+.. reference/quirks
 
 
-.. toctree::
+..
+   toctree::
    :caption: Explanations
    :hidden:
 
    explanations/design
-   explanations/default-options
    explanations/internal-dependencies
    explanations/editable-installs
 
 
 .. toctree::
-   :caption: Contributing
+   :caption: Project
    :hidden:
 
-   contributing/getting-started
-   contributing/commit-format
-   contributing/test-suite
-   contributing/documentation
-   contributing/release-process
-
-
-.. toctree::
-   :caption: Project Links
-   :hidden:
-
+   changelog
+   about
+   contributing/index
    Source Code <https://github.com/mesonbuild/meson-python>
    Issue Tracker <https://github.com/mesonbuild/meson-python/issues>
 
 
-.. |PyPI badge| image:: https://badge.fury.io/py/meson-python.svg
-   :target: https://pypi.org/project/meson-python
-   :alt: PyPI version badge
-
-
-.. _Meson: https://github.com/mesonbuild/meson
 .. _getting started: usage/start.html
 .. _pip: https://github.com/pypa/pip
 .. _pypa/build: https://github.com/pypa/build
